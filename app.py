@@ -3,7 +3,8 @@ from flask_cors import CORS
 import os
 
 app = Flask(__name__)
-CORS(app)
+# CORS fix for frontend on Vercel
+CORS(app, resources={r"/api/*": {"origins": "https://virtual-ta-tds.vercel.app"}})
 
 @app.route("/")
 def index():
@@ -13,7 +14,6 @@ def index():
 def api():
     data = request.json
     question = data.get("question", "")
-    # For now, just return a canned answer
     if "deadline" in question.lower():
         answer = "The Project 1 deadline is June 15."
     else:
