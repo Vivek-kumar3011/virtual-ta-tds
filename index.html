@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Virtual TA</title>
+</head>
+<body>
+  <h1>Ask the Virtual TA</h1>
+  <form id="qa-form">
+    <input type="text" id="question" placeholder="Enter your question" required>
+    <button type="submit">Ask</button>
+  </form>
+  <p id="answer"></p>
+
+  <script>
+    document.getElementById('qa-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const question = document.getElementById('question').value;
+      const response = await fetch('/api/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question })
+      });
+      const data = await response.json();
+      document.getElementById('answer').innerText = data.answer;
+    });
+  </script>
+</body>
+</html>
