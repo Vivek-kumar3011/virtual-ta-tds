@@ -1,17 +1,19 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
-@app.route("/")
-def home():
-    return "Virtual TA API is running! Use POST /api/ to ask questions."
+@app.route('/')
+def index():
+    return 'Virtual TA API is running! Use POST /api/ to ask questions.'
 
-@app.route("/api/", methods=["POST"])
-def answer_question():
+@app.route('/api/', methods=['POST'])
+def answer():
     data = request.get_json()
-    question = data.get("question", "")
-    answer = f"Sorry, I can't answer: '{question}' yet."
-    return jsonify({"answer": answer})
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=5000)
+    question = data.get('question', '')
+    
+    if "deadline" in question.lower():
+        return jsonify({"answer": "The deadline for Project 1 is June 14, 2025."})
+    else:
+        return jsonify({"answer": f"Sorry, I can't answer: '{question}' yet."})
