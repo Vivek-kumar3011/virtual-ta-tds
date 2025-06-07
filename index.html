@@ -1,28 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Virtual TA</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Virtual TA – Ask Questions</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f5f5f5;
+    }
+    h1 {
+      color: #333;
+    }
+    input, button {
+      padding: 0.5rem;
+      font-size: 1rem;
+      margin-right: 0.5rem;
+    }
+    #answer {
+      margin-top: 1rem;
+      font-weight: bold;
+      color: #005A9C;
+    }
+  </style>
 </head>
 <body>
-  <h1>Ask the Virtual TA</h1>
-  <form id="qa-form">
-    <input type="text" id="question" placeholder="Enter your question" required>
-    <button type="submit">Ask</button>
-  </form>
-  <p id="answer"></p>
+
+  <h1>Virtual TA (TDS)</h1>
+  <p>Ask your question below:</p>
+
+  <input type="text" id="questionInput" placeholder="Enter your question here" size="50"/>
+  <button onclick="askQuestion()">Ask</button>
+
+  <div id="answer"></div>
 
   <script>
-    document.getElementById('qa-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const question = document.getElementById('question').value;
-      const response = await fetch('/api/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question })
-      });
-      const data = await response.json();
-      document.getElementById('answer').innerText = data.answer;
-    });
+    async function askQuestion() {
+      const question = document.getElementById("questionInput").value;
+      const answerDiv = document.getElementById("answer");
+      answerDiv.innerText = "Loading...";
+
+      try {
+        const res = await fetch("https://virtual-ta-tds.onrender.com/api/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ question })
+        });
+
+        if (!res.ok) {
+          throw new Error(`HTTP error! Status: ${res.status}`);
+        }
+
+        const data = await res.json();
+        answerDiv.innerText = data.answer;
+      } catch (err) {
+        answerDiv.innerText = "Error: " + err.message;
+        console.error(err);
+      }
+    }
   </script>
+
 </body>
 </html>
